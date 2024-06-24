@@ -1,30 +1,40 @@
-import React, { useState } from 'react';
-import { Button, Flex, Card, Modal, Col, Row, Input, Form, Typography } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Button, Card, Modal, Input, Form, Typography } from 'antd';
 const { Text } = Typography;
 
 export default function Blog() {
+  const { TextArea } = Input;
   const [form] = Form.useForm();
-  const [open, setOpen] = useState(false);
   const [formValues, setFormValues] = useState();
+  const [open, setOpen] = useState(false);
+
   const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:3001/logs')
+      .then((res) => res.json())
+      .then((data) => setPosts(data.dataForLogs));
+  }, []);
 
   const showModal = () => {
     setOpen(true);
   };
 
   const handleOk = (values) => {
-    setPosts([
-      {
-        title: values.title,
-        description: values.description,
-        createTime: new Date(Date.now()).toLocaleString()
+    fetch('http://localhost:3001/logs_push', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
       },
-      ...posts
-    ]);
+      body: JSON.stringify({
+        title: values.title,
+        description: values.description
+      })
+    })
+      .then((res) => res.json())
+      .then((data) => setPosts([data, ...posts]));
     setOpen(false);
   };
-
-  const { TextArea } = Input;
 
   return (
     <div>
@@ -49,7 +59,8 @@ export default function Blog() {
             form={form}
             name="formInModal"
             clearOnDestroy
-            onFinish={(values) => handleOk(values)}>
+            onFinish={(values) => handleOk(values)}
+            method='POST'>
             {dom}
           </Form>
         )}>

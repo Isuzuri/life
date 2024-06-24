@@ -1,18 +1,14 @@
 import { Table } from 'antd';
+import { useEffect, useState } from 'react';
 
 export default function FullPage() {
-  const generatedObjects = [];
-  for (let i = 1; i <= 10; i++) {
-    generatedObjects.push({
-      key: i,
-      title: `Название ${i}`,
-      type: `Тип ${i}`,
-      source: `Источник ${i}`,
-      link: `Ссылка ${i}`,
-      tags: `Тег ${i}`
-    });
-  }
-  const dataSource = generatedObjects;
+  const [dataSource, setDataSource] = useState([])
+
+  useEffect(() => {
+    fetch('http://localhost:3001/table')
+      .then(res => res.json())
+      .then(data => setDataSource(data.dataForTable))
+  })
 
   function fieldFilter(data, field) {
     return data.map((item) => ({
