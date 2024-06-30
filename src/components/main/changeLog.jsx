@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Card, Modal, Input, Form, Typography } from 'antd';
 const { Text } = Typography;
 
-export default function Blog() {
+export default function BlogPage() {
   const { TextArea } = Input;
   const [form] = Form.useForm();
   const [formValues, setFormValues] = useState();
@@ -13,7 +13,7 @@ export default function Blog() {
   useEffect(() => {
     fetch('http://localhost:3001/logs')
       .then((res) => res.json())
-      .then((data) => setPosts(data.dataForLogs));
+      .then((data) => setPosts(data));
   }, []);
 
   const showModal = () => {
@@ -32,7 +32,7 @@ export default function Blog() {
       })
     })
       .then((res) => res.json())
-      .then((data) => setPosts([data, ...posts]));
+      .then((data) => setPosts(data));
     setOpen(false);
   };
 
@@ -60,7 +60,7 @@ export default function Blog() {
             name="formInModal"
             clearOnDestroy
             onFinish={(values) => handleOk(values)}
-            method='POST'>
+            method="POST">
             {dom}
           </Form>
         )}>
@@ -81,8 +81,8 @@ export default function Blog() {
         {posts.map((post, index) => {
           return (
             <Card title={post.title} key={index} style={{ marginBottom: '1rem' }}>
-              <Text>{post.description}</Text> <br />
-              <Text type="secondary">{post.createTime}</Text>
+              <Text style={{ whiteSpace: 'pre-wrap' }}>{post.description}</Text> <br />
+              <Text type="secondary">{new Date(post.createdat).toLocaleDateString()}</Text>
             </Card>
           );
         })}

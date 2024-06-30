@@ -1,18 +1,18 @@
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, NavLink } from 'react-router-dom';
 import { Menu } from 'antd';
 
 export default function Layout() {
   const pageList = [
     {
-      label: <Link to="/changeLog">Change Log</Link>,
+      label: <NavLink to="/">Change Log</NavLink>,
       key: 'blog'
     },
     {
-      label: <Link to="/lists">Lists</Link>,
+      label: <NavLink to="/lists">Lists</NavLink>,
       key: 'lists'
     },
     {
-      label: <Link to="/full">Full</Link>,
+      label: <NavLink to="/full">Full</NavLink>,
       key: 'full'
     }
   ];

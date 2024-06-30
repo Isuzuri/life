@@ -1,7 +1,7 @@
 import { Card, List } from 'antd';
 import { useEffect, useState } from 'react';
 
-export default function ListPage() {
+export default function ListsPage() {
   const data = [
     {
       title: 'Title 1'
