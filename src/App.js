@@ -4,7 +4,6 @@ import ChangeLog from './components/main/changeLog.jsx';
 import ListsPage from './components/main/lists.jsx';
 import Layout from './components/layout.jsx';
 import FullPage from './components/main/full.jsx';
-import HomePage from './components/main/home.jsx';
 
 function App() {
   return (
