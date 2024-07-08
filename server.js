@@ -20,13 +20,25 @@ app.post('/logs_push', (req, res) => {
   db.none(
     `INSERT INTO logs (TITLE, DESCRIPTION, CREATEDAT) VALUES ('${title}', '${description}', '${createdat}')`
   );
-  db.any('SELECT * FROM logs ORDER BY createdat DESC').then((data) => {
-    res.send(data);
-  });
+  db.any('SELECT * FROM logs ORDER BY createdat DESC').then((data) => res.send(data));
 });
 
 app.get('/full', (req, res) => {
-  db.any('SELECT * FROM full_table ORDER BY title').then((data) => res.send(data));
+  db.any('SELECT * FROM full_table ORDER BY TITLE').then((data) => res.send(data));
+});
+
+app.post('/full_push', (req, res) => {
+  if (!req.body.title) return console.error('No body');
+  const title = req.body.title;
+  const type = req.body.type;
+  const quality = req.body.quality;
+  const link = req.body.link;
+  const tags = req.body.tags;
+
+  db.none(
+    `INSERT INTO full_table (TITLE, TYPE, QUALITY, LINK, TAGS) VALUES ('${title}', '${type}', '${quality}', '${link}', '{${tags}}')`
+  );
+  db.any('SELECT * FROM full_table ORDER BY TITLE').then((data) => res.send(data));
 });
 
 app.listen(port, () => {

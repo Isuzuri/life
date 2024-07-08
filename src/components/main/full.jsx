@@ -10,7 +10,7 @@ export default function FullPage() {
     fetch('http://localhost:3001/full')
       .then((res) => res.json())
       .then((data) => setDataSource(data));
-  });
+  }, []);
 
   const tagOptions = [
     {
@@ -57,17 +57,15 @@ export default function FullPage() {
       case 'Toys':
         return 'geekblue';
     }
-  }
-
+  };
   const tagRender = (props) => {
     let { label, closable, onClose, color } = props;
     const onPreventMouseDown = (event) => {
       event.preventDefault();
       event.stopPropagation();
     };
-    color = tagColor(label)
+    color = tagColor(label);
     return (
-      
       <Tag
         color={color}
         onMouseDown={onPreventMouseDown}
@@ -81,12 +79,34 @@ export default function FullPage() {
     );
   };
 
+  const handleCreate = (values) => {
+    fetch('http://localhost:3001/full_push', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify({
+        title: values.title,
+        type: values.type,
+        quality: values.quality,
+        link: values.link,
+        tags: values.tags
+      })
+    })
+      .then((res) => res.json())
+      .then((data) => setDataSource(data));
+  };
+
   return (
     <div>
       <Form
         layout="inline"
-        style={{ flexWrap: 'nowrap', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
-        <Form.Item name="title">
+        style={{ flexWrap: 'nowrap', justifyContent: 'space-between', marginBottom: '1.5rem' }}
+        onFinish={(values) => handleCreate(values)}>
+        <Form.Item
+          name="title"
+          validateTrigger="onBlur"
+          rules={[{ required: true, message: 'Введите название' }]}>
           <Input placeholder="Название" />
         </Form.Item>
         <Form.Item name="type" initialValue={'hentai'}>
@@ -95,8 +115,8 @@ export default function FullPage() {
             <Radio value={'doujinsi'}>Додзинси</Radio>
           </Radio.Group>
         </Form.Item>
-        <Form.Item>
-          <Radio.Group defaultValue={2}>
+        <Form.Item name="quality" initialValue={2}>
+          <Radio.Group>
             <Radio value={3}>
               <Tag color="red">SUPER HOT</Tag>
             </Radio>
@@ -108,13 +128,23 @@ export default function FullPage() {
             </Radio>
           </Radio.Group>
         </Form.Item>
-        <Form.Item name="link">
+        <Form.Item
+          name="link"
+          validateTrigger="onBlur"
+          rules={[{ required: true, message: 'Введите ссылку' }]}>
           <Input placeholder="Ссылка" />
         </Form.Item>
-        <Form.Item name="tags" style={{ width: '20%' }}>
-          <Select mode="multiple" tagRender={tagRender} options={tagOptions} maxTagCount={'responsive'}/>
+        <Form.Item name="tags" style={{ width: '20%' }} validateTrigger='onBlur' rules={[{required: true, message: 'Выберите несколько тегов'}]}>
+          <Select
+            mode="multiple"
+            tagRender={tagRender}
+            options={tagOptions}
+            maxTagCount={'responsive'}
+          />
         </Form.Item>
-        <Button type="primary">Create</Button>
+        <Button type="primary" htmlType="submit">
+          Create
+        </Button>
       </Form>
 
       <Table dataSource={dataSource}>
@@ -166,7 +196,7 @@ export default function FullPage() {
           render={(tags) => (
             <>
               {tags.map((tag) => {
-                const color = tagColor(tag.charAt(0).toUpperCase() + tag.slice(1))
+                const color = tagColor(tag.charAt(0).toUpperCase() + tag.slice(1));
                 return (
                   <Tag color={color} key={tag}>
                     {tag.toUpperCase()}
